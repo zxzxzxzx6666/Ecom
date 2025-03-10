@@ -5,7 +5,7 @@
 ## 架構說明
 此程式使用 identity 作為範例，實做 DDD 架構
 
-### Domain (ApplicationCore)
+## Domain (ApplicationCore)
 討論好的功能會整理成 Domain ，並依照 Domain 建立資料表
 #### Entities (Aggregate Root 、 Entity、Value Object、 Domain Event)
 藉由繼承 IAggregateRoot 辨別 Aggregate Root
@@ -15,17 +15,17 @@ ApplicationCore 邏輯在此處實做，並注入 IRepository 完成資料庫的
 ### Specifications
 在此建立 query 語法 read 的統一入口
 
-### Infrastructure
+## Infrastructure
 建立好 Domain 後需要進到 Infrastructure 設定 EF 資料庫 (Code First)
 #### EfRepository.cs
 此處建立資料庫統一入口，與必須要繼承 IAggregateRoot 才能調用
 
-### Web
+## Web
 dotnet MVC 架構
 #### Service
 在此實做 ApplicationCore 的 Service，將產出的邏輯套用到網頁中
 
-### UniTest
+## UniTest
 置少須對 Service 的所有項目進行測試
 
 
@@ -44,5 +44,5 @@ dotnet MVC 架構
 
 
 
-##### This project is adapted from the Microsoft eShopOnWeb project and is for non-profit use
-##### This project is not responsible for any damage or loss caused by citing
+This project is adapted from the Microsoft eShopOnWeb project and is for non-profit use
+This project is not responsible for any damage or loss caused by citing
