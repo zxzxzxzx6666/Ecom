@@ -26,7 +26,7 @@ dotnet MVC 架構
 在此實做 ApplicationCore 的 Service，將產出的邏輯套用到網頁中
 
 ## UniTest
-置少須對 Service 的所有項目進行測試
+對 Service 的 function 項目進行測試
 
 
 ## api 使用說明
