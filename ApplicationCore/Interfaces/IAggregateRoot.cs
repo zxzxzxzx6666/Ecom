@@ -1,7 +1,7 @@
 ﻿namespace ApplicationCore.Interfaces
 {
     /// <summary>
-    /// Identify which entities are aggregate roots. 
+    /// Identify which entitie is aggregate root. 
     /// </summary>
     public interface IAggregateRoot
     {

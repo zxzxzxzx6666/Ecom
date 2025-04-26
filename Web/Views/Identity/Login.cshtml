@@ -1,0 +1,30 @@
+﻿@model Web.ViewModels.Identity.LoginViewModel
+@{
+    ViewData["Title"] = "Login";
+}
+
+<div class="container mt-5">
+    <h2 class="text-center">Login</h2>
+
+    @* ViewBag Message *@
+    @if (ViewBag.ErrorMessage != null)
+    {
+        <div class="alert alert-danger" role="alert">
+            @ViewBag.ErrorMessage
+        </div>
+    }
+
+    <form method="post" asp-controller="Identity" asp-action="Login">
+        <div class="mb-3">
+            <label asp-for="UserName" class="form-label"></label>
+            <input asp-for="UserName" class="form-control" required />
+            <span asp-validation-for="UserName" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="PassWord" class="form-label"></label>
+            <input asp-for="PassWord" class="form-control" type="password" required />
+            <span asp-validation-for="PassWord" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn btn-primary">Login</button>
+    </form>
+</div>

@@ -7,10 +7,11 @@ namespace Infrastructure.Data
     {
         // Required by Entity Framework
         public WebContext(DbContextOptions<WebContext> options) : base(options) { }
-        public DbSet<IdentityInfo> IdentityInfo { get; set; }
+        public DbSet<IdentityInfos> IdentityInfo { get; set; }
+        public DbSet<Roles> Roles { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<IdentityInfo>()
+            modelBuilder.Entity<IdentityInfos>()
                 .HasIndex(u => u.Email)  // build index
                 .IsUnique();
         }

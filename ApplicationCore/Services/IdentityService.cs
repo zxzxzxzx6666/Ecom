@@ -1,6 +1,9 @@
 ﻿using ApplicationCore.Entities.IdentityAggregate;
+using ApplicationCore.Extensions;
 using ApplicationCore.Interfaces;
 using ApplicationCore.Interfaces.Services;
+using ApplicationCore.Models.Identity;
+using ApplicationCore.Specifications.Identity;
 
 
 namespace ApplicationCore.Services
@@ -16,8 +19,8 @@ namespace ApplicationCore.Services
     public class IdentityService : IIdentityService
     {
         #region Dependency Injection
-        private readonly IRepository<IdentityInfo> _IdentityInfo;
-        public IdentityService(IRepository<IdentityInfo> identityInfo)
+        private readonly IRepository<IdentityInfos> _IdentityInfo;
+        public IdentityService(IRepository<IdentityInfos> identityInfo)
         {
             _IdentityInfo = identityInfo;
         }
@@ -26,8 +29,8 @@ namespace ApplicationCore.Services
         {
             try
             {
-                var identityInfo = new IdentityInfo(Guid.NewGuid().ToString());
-                identityInfo.CreateAccount(userName, email, passWord);
+                var identityInfo = new IdentityInfos(Guid.NewGuid().ToString());
+                identityInfo.CreateAccount(userName, email, passWord, Enums.UserRole.User.ToString());
                 await _IdentityInfo.AddAsync(identityInfo);
                 return true;
             }
@@ -35,6 +38,43 @@ namespace ApplicationCore.Services
             {
                 // todo : log 記錄錯誤訊息
                 return false;
+            }
+        }
+        public async Task<LoginResultModel> Login(string email, string passWord)
+        {
+            var result = new LoginResultModel();
+            try
+            {
+                // find user by email
+                var getUser = new FindUserSpecification(email);
+                var user = await _IdentityInfo.FirstOrDefaultAsync(getUser);
+
+                // verify user
+                if (user == null)
+                {
+                    result.IsSucessfull = false;
+                    result.Message = "User not found!";
+                    return result;
+                }
+                // verify password
+                if (!PassWordHelper.VerifyPassword(passWord, user.HashedPassword))
+                {
+                    result.IsSucessfull = false;
+                    result.Message = "Wrong Password!";
+                    return result;
+                }
+
+                // fill out result
+                result.Token = JwtHelper.GenerateJwtToken(user.UserId.ToString(), user.UserName);
+                result.IsSucessfull = true;
+                result.Roles = user.UserRoles.Select(x => x.RoleName).ToList();
+
+                return result;
+            }
+            catch (Exception)
+            {
+                result.IsSucessfull = false;
+                return result;
             }
         }
     }

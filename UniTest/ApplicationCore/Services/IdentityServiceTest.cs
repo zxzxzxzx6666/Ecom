@@ -9,7 +9,7 @@ namespace ZUniTest.ApplicationCore.Services
     public class IdentityServiceTest
     {
         // mock repository
-        private readonly IRepository<IdentityInfo> _mockIdentityInfoRepo = Substitute.For<IRepository<IdentityInfo>>();
+        private readonly IRepository<IdentityInfos> _mockIdentityInfoRepo = Substitute.For<IRepository<IdentityInfos>>();
         #region SignUp
         [Fact]
         public async Task SignUp_CallsAddAsyncOnce()
@@ -26,7 +26,7 @@ namespace ZUniTest.ApplicationCore.Services
 
             // Assert
             Assert.True(result);
-            await _mockIdentityInfoRepo.Received(1).AddAsync(Arg.Any<IdentityInfo>()); // 確保 AddAsync 方法被正確調用一次
+            await _mockIdentityInfoRepo.Received(1).AddAsync(Arg.Any<IdentityInfos>()); // 確保 AddAsync 方法被正確調用一次
         }
 
 
@@ -39,7 +39,7 @@ namespace ZUniTest.ApplicationCore.Services
             string passWord = "password123";
 
             // mock : Simulate db's actions
-            _mockIdentityInfoRepo.AddAsync(Arg.Any<IdentityInfo>()).Throws(new Exception("Database error"));
+            _mockIdentityInfoRepo.AddAsync(Arg.Any<IdentityInfos>()).Throws(new Exception("Database error"));
 
             var identityService = new IdentityService(_mockIdentityInfoRepo);
 

@@ -22,9 +22,8 @@ namespace ApplicationCore.Extensions
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="username"></param>
-        /// <param name="role"></param>
         /// <returns>JWT Token </returns>
-        public static string GenerateJwtToken(string userId, string username, string role)
+        public static string GenerateJwtToken(string userId, string username)
         {
             // Create encryption key (using HMAC SHA256)
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(SecretKey));
@@ -37,7 +36,6 @@ namespace ApplicationCore.Extensions
             {
                 new Claim(JwtRegisteredClaimNames.Sub, userId),  
                 new Claim(JwtRegisteredClaimNames.UniqueName, username), 
-                new Claim(ClaimTypes.Role, role), 
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()) // JWT unique identification code (to prevent duplication)
             };
 
