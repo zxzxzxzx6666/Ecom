@@ -32,8 +32,9 @@ dotnet MVC 架構
 ## api 使用說明
     1. migration 
     -- create migration (from Web folder CLI)
+        cd Web
         dotnet ef migrations add InitialModel -p ../Infrastructure/Infrastructure.csproj -s Web.csproj -o Data/Migrations
-        dotnet ef database update -c IdentityContext -p ../Infrastructure.csproj -s Web.csproj
+        dotnet ef database update -c WebContext -p ../Infrastructure/Infrastructure.csproj -s Web.csproj
     2. 该命令用于生成并信任本地开发环境的 HTTPS 证书，确保你的 .NET Core / ASP.NET Core 应用在本地可以使用 HTTPS 运行，而不会出现证书警告。
     dotnet dev-certs https --trust		
     3. SQL connection  

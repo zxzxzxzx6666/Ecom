@@ -12,15 +12,15 @@ public class IdendityViewModelService : IIdendityViewModelService
     {
         _IdentityService = identityService;
     }
-    //todo : create user function
+
     public async Task<bool> SignUp(SignUpViewModel model) 
     {
         return await _IdentityService.SignUp(model.UserName, model.Email, model.PassWord);
     }
-    //todo : login function
+    
     public async Task<LoginResultModel> Login(LoginViewModel model)
     {
-        return await _IdentityService.Login(model.UserName, model.PassWord);
+        return await _IdentityService.Login(model.Email, model.PassWord);
     }
     //todo : logout function
 }

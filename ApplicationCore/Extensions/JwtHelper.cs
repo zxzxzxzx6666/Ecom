@@ -22,8 +22,9 @@ namespace ApplicationCore.Extensions
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="username"></param>
+        /// <param name="role">User role (e.g., Admin, User)</param>
         /// <returns>JWT Token </returns>
-        public static string GenerateJwtToken(string userId, string username)
+        public static string GenerateJwtToken(string userId, string username, string role)
         {
             // Create encryption key (using HMAC SHA256)
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(SecretKey));
@@ -36,13 +37,14 @@ namespace ApplicationCore.Extensions
             {
                 new Claim(JwtRegisteredClaimNames.Sub, userId),  
                 new Claim(JwtRegisteredClaimNames.UniqueName, username), 
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()) // JWT unique identification code (to prevent duplication)
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()), // JWT unique identification code (to prevent duplication)
+                new Claim(ClaimTypes.Role, role) // 加入角色資訊
             };
 
             // Generate JWT Token
             var token = new JwtSecurityToken(
-                issuer: "YourApp", // usually the server name
-                audience: "YourApp", // usually the client application
+                issuer: "ecom", // usually the server name
+                audience: "web", // usually the client application
                 claims: claims, 
                 expires: DateTime.UtcNow.AddMinutes(AccessTokenExpirationMinutes), // Set the token expiration time
                 signingCredentials: credentials // Set the signature method
@@ -72,8 +74,8 @@ namespace ApplicationCore.Extensions
                     ValidateAudience = true, 
                     ValidateLifetime = true, // Verify whether the Token is expired
                     ValidateIssuerSigningKey = true, // Verify the signature key
-                    ValidIssuer = "YourApp", // Set the legal publisher
-                    ValidAudience = "YourApp", // Set up legal Audience
+                    ValidIssuer = "ecom", // Set the legal publisher
+                    ValidAudience = "web", // Set up legal Audience
                     IssuerSigningKey = key // Set a valid encryption key
                 };
 

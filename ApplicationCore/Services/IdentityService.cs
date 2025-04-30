@@ -65,7 +65,7 @@ namespace ApplicationCore.Services
                 }
 
                 // fill out result
-                result.Token = JwtHelper.GenerateJwtToken(user.UserId.ToString(), user.UserName);
+                result.Token = JwtHelper.GenerateJwtToken(user.UserId.ToString(), user.UserName, user.UserRoles.Select(x => x.RoleName).FirstOrDefault());
                 result.IsSucessfull = true;
                 result.Roles = user.UserRoles.Select(x => x.RoleName).ToList();
 

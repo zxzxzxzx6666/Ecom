@@ -20,6 +20,7 @@ public class Roles : BaseEntity
     #region domain : business logic
     /// <summary>
     /// Initializes a new instance of the with the specified user ID.
+    /// for now UserId RoleName is one to one
     /// </summary>
     /// <param name="userId"></param>
     public Roles(string roleName, string userId)

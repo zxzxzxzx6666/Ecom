@@ -1,8 +1,6 @@
-﻿using Infrastructure.Data;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
 using System.Text;
 using Web.Configuration;
 
@@ -22,13 +20,19 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateLifetime = true,  // 是否驗證 Token 是否過期，提升安全性
             ValidateIssuerSigningKey = true,  // 是否驗證簽名金鑰，確保 Token 未被篡改
 
-            ValidIssuer = "YourApp",  // 設定合法的發行者 (Issuer)
-            ValidAudience = "YourApp",  // 設定合法的接收者 (Audience)
+            ValidIssuer = "ecom",  // 設定合法的發行者 (Issuer)
+            ValidAudience = "web",  // 設定合法的接收者 (Audience)
 
             // 設定加密金鑰 (這個金鑰必須與 JWT 產生時使用的相同)
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("YourSuperSecretKey123456!"))
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("YourSuperSecretKey123456!")),
+
+            // 讓 [Authorize(Roles = "...")] 能辨識角色
+            RoleClaimType = ClaimTypes.Role 
         };
     });
+
+// 註冊授權服務
+builder.Services.AddAuthorization();
 
 // Configure SQL Server 
 Infrastructure.Dependencies.ConfigureServices(builder.Configuration, builder.Services);
