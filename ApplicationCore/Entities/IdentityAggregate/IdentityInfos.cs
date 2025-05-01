@@ -36,6 +36,24 @@ public class IdentityInfos : BaseEntity, IAggregateRoot
     // This will create a read only wrapper around the private list so is protected against "external updates".
     // It's much cheaper than .ToList() because it will not have to copy all items in a new collection. (Just one heap alloc for the wrapper instance)
     public IReadOnlyCollection<Roles> UserRoles => _userRoles.AsReadOnly();
+
+    // todo : change to one to one
+    // DDD Patterns comment
+    // Instead of a collection, we now use a single Role,
+    // which enforces that a User can only have one Role,
+    // and that Role must be set through behavior (method), not directly.
+    //private Roles _userRole;
+
+    // Encapsulation: only expose as a read-only property
+    //public Roles UserRole => _userRole;
+
+    // Behavior method: must go through this method to assign a Role
+    //public void AssignRole(Roles role)
+    //{
+    // Add validation or business rules here if needed
+    //_userRole = role;
+    //}
+
     #endregion
     /// <summary>
     /// Initializes a new instance of the with the specified user ID.

@@ -11,14 +11,15 @@ namespace ApplicationCore.Extensions
     /// </summary>
     public class JwtHelper
     {
+        // todo put secret in config
         // Secret key (used to encrypt JWT)
-        private const string SecretKey = "YourSuperSecretKey123456!";
+        private const string SecretKey = "YourSuperSecretKey123456789101112131415!";
 
         // Set Access Token validity period (minutes)
         private const int AccessTokenExpirationMinutes = 60;
 
         /// <summary>
-        /// Generate JWT Token
+        /// Generate JWT Token ，使用 JWT Bearer 驗證方案改用 api 後可使用這個解法 [Authorize(AuthenticationSchemes = "JwtBearer")] 
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="username"></param>
@@ -52,6 +53,27 @@ namespace ApplicationCore.Extensions
 
             // Convert JWT to a string and return it
             return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        public static Claim[] GenerateClaims(string userId, string username, string role)
+        {
+            // Create encryption key (using HMAC SHA256)
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(SecretKey));
+
+            // Create a signature certificate
+            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            // Create Claims in JWT (can be used to store user data)
+            var claims = new[]
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, userId),
+                new Claim(JwtRegisteredClaimNames.UniqueName, username),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()), // JWT unique identification code (to prevent duplication)
+                new Claim(ClaimTypes.Role, role) // 加入角色資訊
+            };
+
+            // Convert JWT to a string and return it
+            return claims;
         }
 
         /// <summary>

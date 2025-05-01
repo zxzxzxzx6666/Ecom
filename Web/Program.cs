@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.Text;
@@ -8,9 +9,15 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-// 註冊身份驗證服務，指定使用 JWT Bearer 驗證方案
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Account/Login"; // 未登入會導向這裡
+        options.ExpireTimeSpan = TimeSpan.FromMinutes(60); // Cookie 有效期
+        options.SlidingExpiration = true;           // 每次存取都會延長有效期
+    })
+    .AddJwtBearer(options => //指定使用 JWT Bearer 驗證方案改用 api 後可使用這個解法 [Authorize(AuthenticationSchemes = "JwtBearer")] 
     {
         // 設定 JWT Token 驗證參數
         options.TokenValidationParameters = new TokenValidationParameters
@@ -23,11 +30,20 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidIssuer = "ecom",  // 設定合法的發行者 (Issuer)
             ValidAudience = "web",  // 設定合法的接收者 (Audience)
 
-            // 設定加密金鑰 (這個金鑰必須與 JWT 產生時使用的相同)
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("YourSuperSecretKey123456!")),
+            // 設定加密金鑰 (這個金鑰必須與 JWT 產生時使用的相同) todo : 更換成 config 寫法
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("YourSuperSecretKey123456789101112131415!")),
 
             // 讓 [Authorize(Roles = "...")] 能辨識角色
-            RoleClaimType = ClaimTypes.Role 
+            RoleClaimType = ClaimTypes.Role
+        };
+        // Debug: 打印每次 token 驗證時的詳細訊息
+        options.Events = new JwtBearerEvents
+        {
+            OnAuthenticationFailed = context =>
+            {
+                Console.WriteLine($"Authentication failed: {context.Exception.Message}");
+                return Task.CompletedTask;
+            }
         };
     });
 
@@ -41,11 +57,12 @@ Infrastructure.Dependencies.ConfigureServices(builder.Configuration, builder.Ser
 builder.Services.AddCoreServices(builder.Configuration);
 builder.Services.AddWebServices(builder.Configuration);
 
-var app = builder.Build();
+builder.Services.AddSession();
 
-// 設定中間件 (Middleware) 順序
-app.UseAuthentication(); // 啟用身份驗證 (驗證 Token)
-app.UseAuthorization();  // 啟用授權 (確保用戶有存取權限)
+// 註冊 IHttpClientFactory
+builder.Services.AddHttpClient();
+
+var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -60,7 +77,9 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseAuthorization();
+app.UseAuthentication(); // 啟用身份驗證 (驗證 Token)
+app.UseAuthorization();  // 啟用授權 (確保用戶有存取權限)
+app.UseSession();
 
 app.MapControllerRoute(
     name: "default",
