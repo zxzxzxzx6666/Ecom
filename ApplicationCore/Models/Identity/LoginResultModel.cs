@@ -8,5 +8,6 @@ namespace ApplicationCore.Models.Identity
         public string Message { get; set; } 
         public List<string> Roles { get; set; }
         public Claim[] ClaimItem { get; set; }
+        public string Token { get; set; }
     }
 }
