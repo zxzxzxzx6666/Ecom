@@ -2,6 +2,7 @@
 using System.Text;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
+using ApplicationCore.Entities.IdentityAggregate;
 
 
 namespace ApplicationCore.Extensions
@@ -25,7 +26,7 @@ namespace ApplicationCore.Extensions
         /// <param name="username"></param>
         /// <param name="role">User role (e.g., Admin, User)</param>
         /// <returns>JWT Token </returns>
-        public static string GenerateJwtToken(string userId, string username, string role)
+        public static string GenerateJwtToken(string userId, string username, List<string> roles)
         {
             // Create encryption key (using HMAC SHA256)
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(SecretKey));
@@ -39,8 +40,13 @@ namespace ApplicationCore.Extensions
                 new Claim(JwtRegisteredClaimNames.Sub, userId),  
                 new Claim(JwtRegisteredClaimNames.UniqueName, username), 
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()), // JWT unique identification code (to prevent duplication)
-                new Claim(ClaimTypes.Role, role) // 加入角色資訊
             };
+
+            // claims add roles
+            foreach (var role in roles)
+            {
+                claims.Append(new Claim(ClaimTypes.Role, role));
+            }
 
             // Generate JWT Token
             var token = new JwtSecurityToken(
@@ -54,8 +60,15 @@ namespace ApplicationCore.Extensions
             // Convert JWT to a string and return it
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
-
-        public static Claim[] GenerateClaims(string userId, string username, string role)
+        /// <summary>
+        /// GenerateClaims for mvc redirect 
+        /// todo : 整合 GenerateJwtToken 去重
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="username"></param>
+        /// <param name="roles"></param>
+        /// <returns></returns>
+        public static Claim[] GenerateClaims(string userId, string username, List<string> roles)
         {
             // Create encryption key (using HMAC SHA256)
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(SecretKey));
@@ -69,8 +82,13 @@ namespace ApplicationCore.Extensions
                 new Claim(JwtRegisteredClaimNames.Sub, userId),
                 new Claim(JwtRegisteredClaimNames.UniqueName, username),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()), // JWT unique identification code (to prevent duplication)
-                new Claim(ClaimTypes.Role, role) // 加入角色資訊
             };
+
+            // claims add roles
+            foreach (var role in roles)
+            {
+                claims.Append(new Claim(ClaimTypes.Role, role));
+            }
 
             // Convert JWT to a string and return it
             return claims;

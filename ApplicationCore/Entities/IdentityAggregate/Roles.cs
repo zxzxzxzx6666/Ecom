@@ -14,6 +14,7 @@ public class Roles : BaseEntity
 {
     #region db field
     public string RoleName { get; private set; }
+    // todo : delete this field because already has IdentityInfos field
     public string UserId { get; set; }
     #endregion
 

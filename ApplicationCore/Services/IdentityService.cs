@@ -65,8 +65,8 @@ namespace ApplicationCore.Services
                 }
 
                 // fill out result
-                result.Token = JwtHelper.GenerateJwtToken(user.UserId.ToString(), user.UserName, user.UserRoles.Select(x => x.RoleName).FirstOrDefault()); 
-                result.ClaimItem = JwtHelper.GenerateClaims(user.UserId.ToString(), user.UserName, user.UserRoles.Select(x => x.RoleName).FirstOrDefault());
+                result.Token = JwtHelper.GenerateJwtToken(user.UserId.ToString(), user.UserName, user.UserRoles.Select(x => x.RoleName).ToList()); 
+                result.ClaimItem = JwtHelper.GenerateClaims(user.UserId.ToString(), user.UserName, user.UserRoles.Select(x => x.RoleName).ToList());
                 result.IsSucessfull = true;
                 result.Roles = user.UserRoles.Select(x => x.RoleName).ToList();
 
