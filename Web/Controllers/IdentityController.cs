@@ -23,18 +23,25 @@ namespace Web.Controllers
         [HttpPost]
         public IActionResult SignUp(SignUpViewModel model)
         {
-            if (ModelState.IsValid)
+            // Check if the password and confirm password match
+            if (model.PassWord != model.ConfirmPassWord)
             {
-                //Handle the registration logic here, such as storing in the database
-                _IdendityViewModelService.SignUp(model).GetAwaiter().GetResult();
-
-                return View("Signup", model);
-                //return RedirectToAction("Login", "Account");
+                ModelState.AddModelError("ConfirmPassWord", "Passwords do not match.");
             }
 
-            // If validation fails, redisplay the form
+            if (ModelState.IsValid)
+            {
+                // Handle the registration logic here, such as storing in the database
+                _IdendityViewModelService.SignUp(model).GetAwaiter().GetResult();
+
+                // Redirect to login page after successful signup
+                return RedirectToAction("Login", "Identity");
+            }
+
+            // If validation fails, redisplay the form with error messages
             return View("Signup", model);
         }
+
         [HttpGet]
         public IActionResult Login()
         {
