@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using Web.Models;
+using Web.ViewModels.Home;
 
 namespace Web.Controllers
 {
@@ -14,9 +15,10 @@ namespace Web.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(IndexViewModel model)
         {
-            return View();
+            model.CatalogItems = new List<CatalogItemViewModel>();
+            return View(model);
         }
 
         public IActionResult Privacy()

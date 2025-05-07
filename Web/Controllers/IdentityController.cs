@@ -53,9 +53,10 @@ namespace Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                // return token
+                // return token and claims
                 var result = _IdendityViewModelService.Login(model).GetAwaiter().GetResult();
 
+                // todo : 可以用 config 加上判斷是否使用 jwt token, 如果要用可以回覆 result.Token
                 if (result.IsSucessfull)
                 {
                     // 建立 ClaimsIdentity，這是包含使用者身份與角色資訊的物件
