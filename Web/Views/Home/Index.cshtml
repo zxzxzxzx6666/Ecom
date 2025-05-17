@@ -7,9 +7,24 @@
         <img class="esh-catalog-title" src="~/images/main_banner_text.png" />
     </div>
 </section>
+<section class="esh-catalog-filters">
+    <div class="container">
+        <form method="get">
+            <label class="esh-catalog-label" data-title="brand">
+                <select asp-for="@Model.BrandFilterApplied" asp-items="@Model.Brands" class="esh-catalog-filter"></select>
+            </label>
+            <label class="esh-catalog-label" data-title="type">
+                <select asp-for="@Model.TypesFilterApplied" asp-items="@Model.Types" class="esh-catalog-filter"></select>
+            </label>
+            <input class="esh-catalog-send" type="image" src="~/images/arrow-right.svg" />
+        </form>
+    </div>
+</section>
 <div class="container">
     @if (Model.CatalogItems.Any())
     {
+        <partial name="_pagination" for="PaginationInfo" />
+
         <div class="esh-catalog-items row">
             @foreach (var catalogItem in Model.CatalogItems)
             {
@@ -18,6 +33,7 @@
                 </div>
             }
         </div>
+        <partial name="_pagination" for="PaginationInfo" />
     }
     else
     {
