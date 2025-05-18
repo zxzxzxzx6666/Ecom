@@ -7,6 +7,7 @@ namespace Web.Configuration
         // register web service
         public static IServiceCollection AddWebServices(this IServiceCollection services, IConfiguration configuration)
         {
+            services.AddScoped<IHomeViewModelService, HomeViewModelService>();
             services.AddScoped<IIdendityViewModelService, IdendityViewModelService>();
             return services;
         }
