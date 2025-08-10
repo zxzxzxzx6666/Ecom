@@ -2,11 +2,6 @@
 @{
     ViewData["Title"] = "Home Page";
 }
-<section class="esh-catalog-hero">
-    <div class="container">
-        <img class="esh-catalog-title" src="~/images/main_banner_text.png" />
-    </div>
-</section>
 <section class="esh-catalog-filters">
     <div class="container">
         <form method="get">
@@ -25,10 +20,10 @@
     {
         <partial name="_pagination" for="PaginationInfo" />
 
-        <div class="esh-catalog-items row">
+        <div class="esh-catalog-items row g-4">
             @foreach (var catalogItem in Model.CatalogItems)
             {
-                <div class="esh-catalog-item col-md-4">
+                <div class="esh-catalog-item col-lg-4 col-md-6 col-sm-12 flex-column">
                     <partial name="_product" for="@catalogItem" />
                 </div>
             }
