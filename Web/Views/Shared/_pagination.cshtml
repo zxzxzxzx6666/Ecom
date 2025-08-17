@@ -2,8 +2,7 @@
 @model PaginationInfoViewModel
 @{
     // _pagination.cshtml : 
-    // (partial) Display page number and controll pagination
-
+    //   (partial) Display page number and controll pagination
     var prevRouteData = Context.Request.Query.ToDictionary(x => x.Key, x => x.Value.ToString());
     if (prevRouteData.ContainsKey("pageId"))
         prevRouteData.Remove("pageId");
@@ -15,7 +14,7 @@
 }
 <div class="esh-pager">
     <div class="container-fluid">
-        <div class="row">
+        <div class="row py-4">
                 <div class="col-md-2 col-xs-12">
                     <a class="esh-pager-item-left esh-pager-item--navigable esh-pager-item @Model.Previous"
                        id="Previous"
@@ -26,7 +25,7 @@
                 </div>
                 <div class="col-md-8 col-xs-12 text-center">
                     <span class="esh-pager-item">
-                        Showing @Model.ItemsPerPage of @Model.TotalItems products - Page @(Model.ActualPage + 1) - @Model.TotalPages
+                        Showing @Model.ItemsPerPage of @Model.TotalItems products - Page @(Model.ActualPage + 1) / @Model.TotalPages
                     </span>
                 </div>
                 <div class="col-md-2 col-xs-12">

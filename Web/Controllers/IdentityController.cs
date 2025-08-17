@@ -47,7 +47,14 @@ namespace Web.Controllers
         {
             return View();
         }
-
+        /// <summary>
+        /// login function
+        /// 
+        /// You can use syntactic sugar for authorization.
+        /// [Authorize] ,[Authorize(Roles = "Admin")]
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPost]
         public IActionResult Login(LoginViewModel model)
         {

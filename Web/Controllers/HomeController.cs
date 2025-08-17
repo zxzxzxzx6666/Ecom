@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using Web.Interfaces;
@@ -15,7 +16,6 @@ namespace Web.Controllers
         {
             _homeViewModelService = homeViewModelService;
         }
-
         public async Task<IActionResult>Index(IndexViewModel catalogModel, int? pageId)
         {
             var model = await _homeViewModelService.IndexCatalogItems(catalogModel, pageId);

@@ -15,7 +15,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
-        options.LoginPath = "/Account/Login"; // 未登入會導向這裡
+        options.LoginPath = "/Identity/Login"; // 未登入會導向這裡
         options.ExpireTimeSpan = TimeSpan.FromMinutes(60); // Cookie 有效期
         options.SlidingExpiration = true;           // 每次存取都會延長有效期
     })

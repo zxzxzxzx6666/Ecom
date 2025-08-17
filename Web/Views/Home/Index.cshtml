@@ -3,15 +3,20 @@
     ViewData["Title"] = "Home Page";
 }
 <section class="esh-catalog-filters">
-    <div class="container">
+    <div class="container-fluid">
         <form method="get">
             <label class="esh-catalog-label" data-title="brand">
-                <select asp-for="@Model.BrandFilterApplied" asp-items="@Model.Brands" class="esh-catalog-filter"></select>
+                <label class="me-2 d-inline-block mb-0">Brand :</label>
+                <select asp-for="@Model.BrandFilterApplied" asp-items="@Model.Brands" class="esh-catalog-filter form-select d-inline-block w-auto"></select>
             </label>
             <label class="esh-catalog-label" data-title="type">
-                <select asp-for="@Model.TypesFilterApplied" asp-items="@Model.Types" class="esh-catalog-filter"></select>
+                <label class="ms-2 me-2 d-inline-block mb-0">Types : </label>
+                <select asp-for="@Model.TypesFilterApplied" asp-items="@Model.Types" class="esh-catalog-filter form-select d-inline-block w-auto"></select>
             </label>
-            <input class="esh-catalog-send" type="image" src="~/images/arrow-right.svg" />
+            <button class="esh-catalog-send ms-2 btn btn-primary" type="submit">
+                Search
+            </button>
+
         </form>
     </div>
 </section>
