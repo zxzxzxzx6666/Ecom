@@ -1,10 +1,10 @@
-﻿using ApplicationCore.Entities.IdentityAggregate;
-using ApplicationCore.Models.Identity;
-using Web.ViewModels.Identity;
+﻿using Microsoft.AspNetCore.Mvc;
+using Web.ViewModels.Basket;
 
 namespace Web.Interfaces
 {
     public interface IBasketViewModelService
     {
+        Task<IActionResult> AddItemToBasket();
     }
 }

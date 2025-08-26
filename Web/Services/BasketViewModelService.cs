@@ -15,4 +15,10 @@ public class BasketViewModelService : IBasketViewModelService
     {
         _basketService = basketService;
     }
+    public async Task<IActionResult> AddItemToBasket()
+    {
+        // Example implementation for AddItemToBasket
+        // Replace with actual logic as per your application's requirements
+        return new OkResult();
+    }
 }

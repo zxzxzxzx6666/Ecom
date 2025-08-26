@@ -1,15 +1,19 @@
 ﻿@using Web.ViewModels.Home
 @model CatalogItemViewModel
 
-<form asp-page="/Basket/Index" method="post">
+<form id="basketForm">
+    @* display *@
     <img class="esh-catalog-thumbnail img-fluid" src="@Model.PictureUri" />
-    <input class="esh-catalog-button my-2 btn btn-outline-primary" type="submit" value="[ ADD TO BASKET ]" />
+    <button class="esh-catalog-button my-2 btn btn-outline-primary" onclick="AddItemToBasket(this)">
+        [ ADD TO BASKET ]
+    </button>
     <div class="esh-catalog-name">
         <span>@Model.Name</span>
     </div>
     <div class="esh-catalog-price">
         <span>@Model.Price.ToString("N2")</span>
     </div>
+    @* add item to basket post request data*@
     <input type="hidden" asp-for="@Model.Id" name="id" />
     <input type="hidden" asp-for="@Model.Name" name="name" />
     <input type="hidden" asp-for="@Model.PictureUri" name="pictureUri" />

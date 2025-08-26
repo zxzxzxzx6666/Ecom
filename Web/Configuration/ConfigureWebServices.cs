@@ -9,6 +9,7 @@ namespace Web.Configuration
         {
             services.AddScoped<IHomeViewModelService, HomeViewModelService>();
             services.AddScoped<IIdendityViewModelService, IdendityViewModelService>();
+            services.AddScoped<IBasketViewModelService, BasketViewModelService>();
             return services;
         }
     }
