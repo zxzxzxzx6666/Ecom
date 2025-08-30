@@ -1,4 +1,6 @@
-﻿using Ardalis.Result;
+﻿using ApplicationCore.Entities;
+using ApplicationCore.Interfaces;
+using Ardalis.Result;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
@@ -8,51 +10,48 @@ using System.Security.Claims;
 using Web.Interfaces;
 using Web.Services;
 using Web.ViewModels.Basket;
+using Web.ViewModels.Home;
 
 namespace Web.Controllers
 {
     public class BasketController : Controller
     {
-        private IBasketViewModelService _BasketViewModelService;
-        
-        public BasketController(IBasketViewModelService basketViewModelService, IHttpClientFactory httpClientFactory)
+        private IBasketViewModelService _basketViewModelService;
+        private readonly IRepository<CatalogItem> _itemRepository;
+
+        public BasketController(IBasketViewModelService basketViewModelService, IHttpClientFactory httpClientFactory, IRepository<CatalogItem> itemRepository)
         {
-            _BasketViewModelService = basketViewModelService;
+            _basketViewModelService = basketViewModelService;
+            _itemRepository = itemRepository;
         }
         [Authorize]
-        public async Task<IActionResult> AddItemToBasket(AddItemToBasketModel AddItemToBasket)
+        public async Task<IActionResult> AddItemToBasket(CatalogItemViewModel productDetails)
         {
-            // if there no productDetails?.Id then RedirectToPage("/Index")
+            // get username
+            var username = User.Identity?.Name;
 
-            // get productDetails.Id for productDetails
+            // Get or create basket
+            var BasketModel = await _basketViewModelService.GetOrCreateBasketForUser(username);
 
-            // if there no item then RedirectToPage("/Index")
+            // redirect to home if product is not exist
+            if (productDetails?.Id == null)
+            {
+                return RedirectToPage("/Index");
+            }
+            var item = await _itemRepository.GetByIdAsync(productDetails.Id);
+            if (item == null)
+            {
+                return RedirectToPage("/Index");
+            }
 
-            // if there no product id then RedirectToPage("/Index")
+            // add item to basket
+            var basket = await _basketViewModelService.AddItemToBasket(username,productDetails.Id, item.Price);
 
-            //get item by productDetails.Id
+            // todo: check should remove this and map function?
+            // update basket model
+            BasketModel = await _basketViewModelService.Map(basket);
 
-            // if there no item then RedirectToPage("/Index")
-
-            // get user information from cookie
-            // 是否已登入
-            //bool isAuth = User.Identity?.IsAuthenticated == true;
-            // 常見 Claims
-            //string? userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-            //string? userName = User.Identity?.Name  // 等同於 Name claim
-                             //?? User.FindFirst(System.Security.Claims.ClaimTypes.Name)?.Value;
-            //string? email = User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value;
-            // 角色
-            //bool isAdmin = User.IsInRole("Admin");
-            // 自訂 Claim
-            //string? tenantId = User.FindFirst("tenant_id")?.Value;
-
-            // Add basket item (move it to service)
-            //var basket = await _basketService.AddItemToBasket(username,
-            //productDetails.Id, item.Price);
-
-            // return true or false
-            return Json(new { success = true , message = "test"});
+            return Json(new { success = true , message = "test", basketNum = 1});
         }
     }
 }
