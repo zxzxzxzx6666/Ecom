@@ -26,7 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\js\Shared\" />
+    <Folder Include="wwwroot\js\Home\" />
   </ItemGroup>
 
 </Project>

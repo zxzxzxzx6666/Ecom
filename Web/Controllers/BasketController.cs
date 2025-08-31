@@ -27,8 +27,8 @@ namespace Web.Controllers
         [Authorize]
         public async Task<IActionResult> AddItemToBasket(CatalogItemViewModel productDetails)
         {
-            // get username
-            var username = User.Identity?.Name;
+            // Get the UserID claim value from the current user
+            var username = User.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
 
             // Get or create basket
             var BasketModel = await _basketViewModelService.GetOrCreateBasketForUser(username);
@@ -47,11 +47,10 @@ namespace Web.Controllers
             // add item to basket
             var basket = await _basketViewModelService.AddItemToBasket(username,productDetails.Id, item.Price);
 
-            // todo: check should remove this and map function?
-            // update basket model
-            BasketModel = await _basketViewModelService.Map(basket);
+            // add item info to basket model
+            //BasketModel = await _basketViewModelService.Map(basket);
 
-            return Json(new { success = true , message = "test", basketNum = 1});
+            return Json(new { success = true , message = "Success"});
         }
     }
 }
