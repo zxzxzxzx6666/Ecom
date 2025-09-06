@@ -1,15 +1,8 @@
 ﻿using ApplicationCore.Entities;
 using ApplicationCore.Interfaces;
-using Ardalis.Result;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 using Web.Interfaces;
-using Web.Services;
-using Web.ViewModels.Basket;
 using Web.ViewModels.Home;
 
 namespace Web.Controllers
@@ -18,12 +11,30 @@ namespace Web.Controllers
     {
         private IBasketViewModelService _basketViewModelService;
         private readonly IRepository<CatalogItem> _itemRepository;
+        private readonly IBasketService _basketService;
 
-        public BasketController(IBasketViewModelService basketViewModelService, IHttpClientFactory httpClientFactory, IRepository<CatalogItem> itemRepository)
+        public BasketController(IBasketViewModelService basketViewModelService, IHttpClientFactory httpClientFactory, IRepository<CatalogItem> itemRepository, IBasketService basketService)
         {
             _basketViewModelService = basketViewModelService;
             _itemRepository = itemRepository;
+            _basketService = basketService;
         }
+        /// <summary>
+        /// bastet page
+        /// </summary>
+        /// <returns></returns>
+        [Authorize]
+        public async Task<IActionResult> Index()
+        {
+            var username = User.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
+            var BasketModel = await _basketViewModelService.GetOrCreateBasketForUser(username);
+            return View(BasketModel);
+        }
+        /// <summary>
+        /// user add item to their basket
+        /// </summary>
+        /// <param name="productDetails"></param>
+        /// <returns></returns>
         [Authorize]
         public async Task<IActionResult> AddItemToBasket(CatalogItemViewModel productDetails)
         {
