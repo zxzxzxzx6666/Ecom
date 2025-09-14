@@ -3,6 +3,7 @@ using ApplicationCore.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Web.Interfaces;
+using Web.ViewModels.Basket;
 using Web.ViewModels.Home;
 
 namespace Web.Controllers
@@ -62,6 +63,25 @@ namespace Web.Controllers
             //BasketModel = await _basketViewModelService.Map(basket);
 
             return Json(new { success = true , message = "Success"});
+        }
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> UpdateBasket([FromBody] IEnumerable<BasketItemViewModel> items)
+        {
+            // check model state
+            if (!ModelState.IsValid)
+            {
+                Json(new { success = true, message = "fail" });
+            }
+
+            // get basket by user
+            var username = User.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
+            var basketView = await _basketViewModelService.GetOrCreateBasketForUser(username);
+
+            // update quantities
+            var updateModel = items.ToDictionary(b => b.Id.ToString(), b => b.Quantity);
+            var basket = await _basketService.SetQuantities(basketView.Id, updateModel);
+            return Json(new { success = true, message = "Success" });
         }
     }
 }

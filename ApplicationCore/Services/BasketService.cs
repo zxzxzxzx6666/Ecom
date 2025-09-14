@@ -45,13 +45,20 @@ namespace ApplicationCore.Services
             Guard.Against.Null(basket, nameof(basket));
             await _basketRepository.DeleteAsync(basket);
         }
-
+        /// <summary>
+        /// set quantities for items in the basket
+        /// </summary>
+        /// <param name="basketId"> basket ID</param>
+        /// <param name="quantities"> dictionary : {basketItem ID, quantity} </param>
+        /// <returns></returns>
         public async Task<Result<Basket>> SetQuantities(int basketId, Dictionary<string, int> quantities)
         {
+            // get user basket
             var basketSpec = new BasketWithItemsSpecification(basketId);
             var basket = await _basketRepository.FirstOrDefaultAsync(basketSpec);
             if (basket == null) return Result<Basket>.NotFound();
 
+            // update item's quantity in the basket 
             foreach (var item in basket.Items)
             {
                 if (quantities.TryGetValue(item.Id.ToString(), out var quantity))
@@ -62,6 +69,7 @@ namespace ApplicationCore.Services
             }
             basket.RemoveEmptyItems();
             await _basketRepository.UpdateAsync(basket);
+
             return basket;
         }
 

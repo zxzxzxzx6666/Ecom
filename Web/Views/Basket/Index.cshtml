@@ -7,7 +7,7 @@
 
     @if (Model.Items.Any())
     {
-        <form method="post">
+        <form>
             <article class="esh-basket-titles row">
                 <br />
                 <section class="esh-basket-title col-sm-3">Product</section>
@@ -33,9 +33,9 @@
                             <section class="esh-basket-item esh-basket-item--middle">$ @item.UnitPrice.ToString("N2")</section>
                         </div>
                         <div class="col-sm-2">
-                            <section class="esh-basket-item esh-basket-item--middle">
-                                <input type="hidden" name="@("Items[" + i + "].Id")" value="@item.Id" />
-                                <input type="number" class="esh-basket-input" min="0" name="@("Items[" + i + "].Quantity")" value="@item.Quantity" />
+                            <section class="esh-basket-item esh-basket-item--middle" name="basket-item-UpdateOrChange">
+                                <input type="hidden" class="esh-basket-item-id" value="@item.Id" />
+                                <input type="number" class="esh-basket-item-quentity" min="0" value="@item.Quantity" />
                             </section>
                         </div>
                         <div class="col-sm-2">
@@ -54,10 +54,10 @@
                         </section>
                         <div class="col-sm-3"></div>
                         <section class="esh-basket-item col-sm-3">
-                            <button class="btn btn-outline-primary esh-basket-Update" value="" type="submit">
+                            <button type="button" class="esh-basket-Update btn btn-outline-primary" onclick="UpdateBasket(this)">
                                 [ Update ]
                             </button>
-                            <button class="btn btn-outline-primary esh-basket-checkout" value="" type="submit">
+                            <button type="button" class="esh-basket-checkout btn btn-outline-primary" onclick="CheckoutBasket(this)">
                                 [ Checkout ]
                             </button>
                         </section>
@@ -87,3 +87,7 @@
         </section>
     }
 </div>
+@* use basket index jquery *@
+@section Scripts {
+    <script src="~/js/Basket/index.js"></script>
+}
