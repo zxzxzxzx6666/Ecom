@@ -84,7 +84,7 @@ public class BasketViewModelService : IBasketViewModelService
             Items = await GetBasketItems(basket.Items)
         };
     }
-    private async Task<List<BasketItemViewModel>> GetBasketItems(IReadOnlyCollection<BasketItem> basketItems)
+    private async Task<List<BasketItemModel>> GetBasketItems(IReadOnlyCollection<BasketItem> basketItems)
     {
         var catalogItemsSpecification = new CatalogItemsSpecification(basketItems.Select(b => b.CatalogItemId).ToArray());
         var catalogItems = await _itemRepository.ListAsync(catalogItemsSpecification);
@@ -93,7 +93,7 @@ public class BasketViewModelService : IBasketViewModelService
         {
             var catalogItem = catalogItems.First(c => c.Id == basketItem.CatalogItemId);
 
-            var basketItemViewModel = new BasketItemViewModel
+            var basketItemViewModel = new BasketItemModel
             {
                 Id = basketItem.Id,
                 UnitPrice = basketItem.UnitPrice,

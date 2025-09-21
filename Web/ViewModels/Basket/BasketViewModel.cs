@@ -3,7 +3,7 @@
     public class BasketViewModel
     {
         public int Id { get; set; }
-        public List<BasketItemViewModel> Items { get; set; } = new List<BasketItemViewModel>();
+        public List<BasketItemModel> Items { get; set; } = new List<BasketItemModel>();
         public string? BuyerId { get; set; }
 
         public decimal Total()

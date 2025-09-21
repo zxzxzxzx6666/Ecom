@@ -20,6 +20,7 @@ namespace Web.Controllers
             _itemRepository = itemRepository;
             _basketService = basketService;
         }
+        #region page
         /// <summary>
         /// bastet page
         /// </summary>
@@ -31,6 +32,19 @@ namespace Web.Controllers
             var BasketModel = await _basketViewModelService.GetOrCreateBasketForUser(username);
             return View(BasketModel);
         }
+        /// <summary>
+        /// bastet page
+        /// </summary>
+        /// <returns></returns>
+        [Authorize]
+        public async Task<IActionResult> Checkout()
+        {
+            var username = User.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
+            var BasketModel = await _basketViewModelService.GetOrCreateBasketForUser(username);
+            return View(BasketModel);
+        }
+        #endregion
+        #region index api
         /// <summary>
         /// user add item to their basket
         /// </summary>
@@ -57,16 +71,16 @@ namespace Web.Controllers
             }
 
             // add item to basket
-            var basket = await _basketViewModelService.AddItemToBasket(username,productDetails.Id, item.Price);
+            var basket = await _basketViewModelService.AddItemToBasket(username, productDetails.Id, item.Price);
 
             // add item info to basket model
             //BasketModel = await _basketViewModelService.Map(basket);
 
-            return Json(new { success = true , message = "Success"});
+            return Json(new { success = true, message = "Success" });
         }
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> UpdateBasket([FromBody] IEnumerable<BasketItemViewModel> items)
+        public async Task<IActionResult> UpdateBasket([FromBody] IEnumerable<BasketItemModel> items)
         {
             // check model state
             if (!ModelState.IsValid)
@@ -83,5 +97,6 @@ namespace Web.Controllers
             var basket = await _basketService.SetQuantities(basketView.Id, updateModel);
             return Json(new { success = true, message = "Success" });
         }
+        #endregion
     }
 }
