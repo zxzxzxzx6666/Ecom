@@ -10,16 +10,17 @@
 
 <div class="container">
     <h1>Review</h1>
+    <div class="esh-basket-id" hidden>@Model.Id</div>
     @if (Model.Items.Any())
     {
         <form>
             <article class="esh-basket-titles row">
                 <br />
-                <section class="esh-basket-title col-xs-3">Product</section>
-                <section class="esh-basket-title col-xs-3 hidden-lg-down"></section>
-                <section class="esh-basket-title col-xs-2">Price</section>
-                <section class="esh-basket-title col-xs-2">Quantity</section>
-                <section class="esh-basket-title col-xs-2">Cost</section>
+                <section class="esh-basket-title col-sm-3">Product</section>
+                <section class="esh-basket-title col-sm-3 hidden-lg-down"></section>
+                <section class="esh-basket-title col-sm-2">Price</section>
+                <section class="esh-basket-title col-sm-2">Quantity</section>
+                <section class="esh-basket-title col-sm-2">Cost</section>
             </article>
             <div class="esh-catalog-items row">
                 <div class="text-danger"></div>
@@ -27,18 +28,18 @@
                 {
                     var item = Model.Items[i];
                     <article class="esh-basket-items row">
-                        <div>
-                            <section class="esh-basket-item esh-basket-item--middle col-lg-3 hidden-lg-down">
-                                <img class="esh-basket-image" src="@item.PictureUrl" />
+                        <div class="row">
+                            <section class="esh-basket-item esh-basket-item--middle col-sm-3 hidden-lg-down">
+                                <img class="esh-basket-image img-fluid" src="@item.PictureUrl" />
                             </section>
-                            <section class="esh-basket-item esh-basket-item--middle col-xs-3">@item.ProductName</section>
-                            <section class="esh-basket-item esh-basket-item--middle col-xs-2">$ @item.UnitPrice.ToString("N2")</section>
-                            <section class="esh-basket-item esh-basket-item--middle col-xs-2">
+                            <section class="esh-basket-item esh-basket-item--middle col-sm-3">@item.ProductName</section>
+                            <section class="esh-basket-item esh-basket-item--middle col-sm-2">$ @item.UnitPrice.ToString("N2")</section>
+                            <section class="esh-basket-item esh-basket-item--middle col-sm-2">
                                 <input type="hidden" name="@("Items[" + i + "].Id")" value="@item.Id" />
                                 <input type="hidden" name="@("Items[" + i + "].Quantity")" value="@item.Quantity" />
                                 @item.Quantity
                             </section>
-                            <section class="esh-basket-item esh-basket-item--middle esh-basket-item--mark col-xs-2">$ @Math.Round(item.Quantity * item.UnitPrice, 2).ToString("N2")</section>
+                            <section class="esh-basket-item esh-basket-item--middle esh-basket-item--mark col-sm-2">$ @Math.Round(item.Quantity * item.UnitPrice, 2).ToString("N2")</section>
                         </div>
                         <div class="row">
 
@@ -48,25 +49,27 @@
 
                 <div class="container">
                     <article class="esh-basket-titles esh-basket-titles--clean row">
-                        <section class="esh-basket-title col-xs-10"></section>
-                        <section class="esh-basket-title col-xs-2">Total</section>
+                        <section class="esh-basket-title col-sm-10"></section>
+                        <section class="esh-basket-title col-sm-2">Total</section>
                     </article>
 
                     <article class="esh-basket-items row">
-                        <section class="esh-basket-item col-xs-10"></section>
-                        <section class="esh-basket-item esh-basket-item--mark col-xs-2">$ @Model.Total().ToString("N2")</section>
+                        <section class="esh-basket-item col-sm-10"></section>
+                        <section class="esh-basket-item esh-basket-item--mark col-sm-2">$ @Model.Total().ToString("N2")</section>
                     </article>
 
                     <article class="esh-basket-items row">
-                        <section class="esh-basket-item col-xs-7"></section>
+                        <section class="esh-basket-item col-sm-7"></section>
                     </article>
                 </div>
                 <div class="row">
-                    <section class="esh-basket-item col-xs-1">
+                    <section class="esh-basket-item col-sm-1">
                         <a href="/Basket/Index" class="btn esh-basket-checkout text-white">[ Back ]</a>
                     </section>
-                    <section class="esh-basket-item col-xs-push-7 col-xs-4 text-right">
-                        <input type="submit" class="btn esh-basket-checkout" value="[ Pay Now ]" />
+                    <section class="esh-basket-item col-sm-push-7 col-sm-4 text-right">
+                        <button type="button" class="esh-basket-checkout btn btn-outline-primary" onclick="Checkout(this)">
+                            [ Pay Now ]
+                        </button>
                     </section>
                 </div>
             </div>
@@ -83,3 +86,7 @@
         </section>
     }
 </div>
+@* use basket index jquery *@
+@section Scripts {
+    <script src="~/js/Basket/Checkout.js"></script>
+}

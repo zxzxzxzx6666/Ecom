@@ -29,4 +29,11 @@
     <Folder Include="wwwroot\js\Home\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="wwwroot\js\Basket\Checkout.js">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>

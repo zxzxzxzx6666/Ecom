@@ -1,5 +1,8 @@
 ﻿using ApplicationCore.Entities;
+using ApplicationCore.Entities.OrderAggregate;
+using ApplicationCore.Exceptions;
 using ApplicationCore.Interfaces;
+using ApplicationCore.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Web.Interfaces;
@@ -13,12 +16,22 @@ namespace Web.Controllers
         private IBasketViewModelService _basketViewModelService;
         private readonly IRepository<CatalogItem> _itemRepository;
         private readonly IBasketService _basketService;
+        private readonly IOrderService _orderService;
+        private readonly IAppLogger<BasketController> _logger;
 
-        public BasketController(IBasketViewModelService basketViewModelService, IHttpClientFactory httpClientFactory, IRepository<CatalogItem> itemRepository, IBasketService basketService)
+        public BasketController(
+            IBasketViewModelService basketViewModelService, 
+            IHttpClientFactory httpClientFactory, 
+            IRepository<CatalogItem> itemRepository, 
+            IBasketService basketService, 
+            IOrderService orderService, 
+            IAppLogger<BasketController> logger)
         {
             _basketViewModelService = basketViewModelService;
             _itemRepository = itemRepository;
             _basketService = basketService;
+            _orderService = orderService;
+            _logger = logger;
         }
         #region page
         /// <summary>
@@ -95,6 +108,33 @@ namespace Web.Controllers
             // update quantities
             var updateModel = items.ToDictionary(b => b.Id.ToString(), b => b.Quantity);
             var basket = await _basketService.SetQuantities(basketView.Id, updateModel);
+            return Json(new { success = true, message = "Success" });
+        }
+        #endregion
+        #region Checkout api
+        /// <summary>
+        /// bastet page
+        /// </summary>
+        /// <returns></returns>
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> Payment([FromBody] BasketViewModel basket)
+        {
+            try
+            {
+                // get user
+                var username = User.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
+                // create order
+                await _orderService.CreateOrderAsync(basket.Id, new Address("123 Main St.", "Kent", "OH", "United States", "44240"));
+                // delete basket
+                await _basketService.DeleteBasketAsync(basket.Id);
+            }
+            catch (EmptyBasketOnCheckoutException emptyBasketOnCheckoutException)
+            {
+                //Redirect to Empty Basket page
+                _logger.LogWarning(emptyBasketOnCheckoutException.Message);
+                return Json(new { success = true, message = "Fail" });
+            }
             return Json(new { success = true, message = "Success" });
         }
         #endregion
